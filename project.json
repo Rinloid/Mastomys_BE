@@ -1,0 +1,20 @@
+{
+    "base_profile": {
+        "macros": [],
+        "include_patterns": ["*"],
+        "merge_source": ["../vanilla"],
+        "include_search_paths": ["./Include"],
+        "exclude_patterns": ["./Include", ".*", "./img"]
+    },
+    "profiles": {
+        "windows": {
+            "platforms": ["Direct3D_SM40", "Direct3D_SM50", "Direct3D_SM60", "Direct3D_SM65"]
+        },
+        "android": {
+            "platforms": ["ESSL_310"]
+        },
+        "ios": {
+            "platforms": ["Metal"]
+        }
+    }
+}

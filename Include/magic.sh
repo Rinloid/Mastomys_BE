@@ -1,0 +1,54 @@
+#if !defined(MAGIC_INCLUDED)
+#define MAGIC_INCLUDED
+
+#define PI    3.1415927410125733
+#define INVPI 0.3183098861837907
+
+#define MC_CHUNK_SCALE 16.0
+
+#define REFLECTIVE_NORMAL_HEIGHT 0.00064
+
+#define DEFAULT_DIRECTION vec3(0.0, 1.0, 0.0)
+#define DEFAULT_F0        0.04
+#define DEFAULT_ROUGHNESS 0.5
+
+#define WATER_WAVE_HEIGHT 0.1
+#define WATER_COLOR   vec4(0.01, 0.02, 0.03, 0.1)
+#define WATER_F0        0.03
+#define WATER_ROUGHNESS 0.02
+
+#define IRON_ROUGHNESS             0.1
+#define GOLD_ROUGHNESS             0.2
+#define COPPER_ROUGHNESS           0.4
+#define OTHER_REFLECTIVE_ROUGHNESS 0.2
+#define OTHER_REFLECTIVE_F0        0.04
+
+#define TRANSLUCENT_ROUGHNESS 0.15;
+
+#define TERRAIN_LIGHT_COUNT 6
+
+#define SUN_LIGHT_COLOR_UNDERWATER vec3(0.0, 0.5, 1.0)
+#define SUN_LIGHT_COLOR            vec3(1.0, 0.8, 0.5)
+#define SUN_LIGHT_COLOR_DUSKDAWN   vec3(1.0, 0.5, 0.0)
+#define MOON_LIGHT_COLOR           vec3(0.4, 0.5, 1.0)
+#define TORCH_LIGHT_COLOR          vec3(1.0, 0.4, 0.0)
+#define POINT_LIGHT_COLOR          vec3(1.0, 0.7, 0.2)
+
+#define AMBIENT_LIGHT_INTENSITY 0.05
+#define SKY_LIGHT_INTENSITY     1.35
+#define SUN_LIGHT_INTENSITY     11.2
+#define MOON_LIGHT_INTENSITY    0.35
+#define TORCH_LIGHT_INTENSITY   1.0
+#define POINT_LIGHT_INTENSITY   10.0
+
+#define AMBIENT_LIGHT_DIFFUSION        1.0
+#define SKY_LIGHT_DIFFUSION            1.0
+#define SUN_LIGHT_DIFFUSION            0.1
+#define SUN_LIGHT_DIFFUSION_UNDERWATER 0.5
+#define MOON_LIGHT_DIFFUSION           0.2
+#define TORCH_LIGHT_DIFFUSION          1.0
+
+#define AO_AMOUNT 1.15
+#define RAIN_CUTTOFF 0.2
+
+#endif /* !defined(MAGIC_INCLUDED) */
