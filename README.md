@@ -24,7 +24,7 @@ Install these tools depending on your device:
 * Android: [MB Loader](https://play.google.com/store/apps/details?id=io.github.bambosan.mbloader)
 
 And now, your game is able to load shaders from resource packs.
-See [releases](https://github.com/Rinloid/Mastomys-BE/releases) to download the .mcpack and apply it!
+See [releases](https://github.com/Rinloid/Mastomys_BE/releases) to download the .mcpack and apply it!
 
 If your are on iOS, unfortunately you have to relpace the material.bin files inside your application file manually.
 
