@@ -7,7 +7,7 @@
 CONST(float rayleighScatteringIntensity = 4.0;)
 CONST(float mieScatteringIntensity = 0.1;)
 CONST(vec3 rayleighCoeffColor = vec3(0.3, 0.5, 1.0);)
-CONST(vec3 mieCoeffColor = vec3(1.0, 0.7, 0.4);)
+CONST(vec3 mieCoeffColor = vec3(1.0, 0.6, 0.0);)
 
 CONST(float duskDayTransition = 0.4;)
 CONST(float nightDayTransition = 0.08;)
