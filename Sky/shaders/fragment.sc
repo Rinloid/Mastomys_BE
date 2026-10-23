@@ -29,9 +29,10 @@ void main() {
     float rainLevel = (underwater || nether || theEnd) ? 0.0 : getRainLevel(FogColor, FogAndDistanceControl.xy);
     // float sunAngle = sunHeight(FogColor);
     float sunAngle = MinecraftTimeOfDay.x * 2.0 * PI;
-    float dayTime = max(0.0, cos(sunAngle));
     vec3 sunPosition = normalize(vec3(sin(sunAngle), cos(sunAngle), 0.3));
+    float dayTime = max(0.0, sunPosition.y);
     vec3 moonPosition = -sunPosition;
+    float nightTime = max(0.0, moonPosition.y);
     vec3 skyPos = normalize(v_playerPos);
 
     vec3 sky = calculateSky(skyPos, v_viewPos, MinecraftCameraPosition.xyz, 1.0, sunPosition, moonPosition, dayTime, rainLevel, ViewPositionAndTime.w, false, false).rgb;

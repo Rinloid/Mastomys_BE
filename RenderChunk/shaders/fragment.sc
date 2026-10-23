@@ -87,9 +87,10 @@ void main() {
     
     // float sunAngle = sunHeight(FogColor);
     float sunAngle = MinecraftTimeOfDay.x * 2.0 * PI;
-    float dayTime = max(0.0, cos(sunAngle));
     vec3 sunPosition = normalize(vec3(sin(sunAngle), cos(sunAngle), 0.3));
+    float dayTime = max(0.0, sunPosition.y);
     vec3 moonPosition = -sunPosition;
+    float nightTime = max(0.0, moonPosition.y);
     
     float shadowFactor = smoothstep(0.92, 0.9375, v_texcoord1.y);
     float causticFactor = 0.0;
@@ -172,7 +173,7 @@ void main() {
     if (rainLevel > 0.0) {
         float wet = 0.0;
         if (!isWater) {
-            wet = mix(0.0, rainLevel * 0.3, shadowFactor);
+            wet = mix(0.0, rainLevel * WET_GROUND_FACTOR, shadowFactor);
         }
 
         F0 = mix(F0, vec3_splat(WATER_F0), wet);
@@ -180,14 +181,14 @@ void main() {
         wetness = mix(wetness, 1.0, wet);
     }
 
-    normal = normalize(mul(getTBNMatrix(normal), getRainRipplesNormal(fNormal, v_worldPos.xz, rainLevel, v_texcoord1.y, ViewPositionAndTime.w, 0.01)));
+    normal = normalize(mul(getTBNMatrix(normal), getRainRipplesNormal(fNormal, v_worldPos.xz, rainLevel, v_texcoord1.y, ViewPositionAndTime.w, RAIN_RIPPLES_HEIGHT)));
 
     vec3 skyPos = normalize(v_playerPos);
     vec3 skyReflPos = reflect(normalize(v_playerPos), normal);
 
     // Calculate light colors.
     vec3 skyLightColor = calculateSkyLightColor(skyPos, sunPosition, moonPosition, dayTime, rainLevel);
-    vec3 sunLightColor = underwater ? SUN_LIGHT_COLOR_UNDERWATER : mix(SUN_LIGHT_COLOR_DUSKDAWN, SUN_LIGHT_COLOR, smoothstep(0.0, 0.4, dayTime));
+    vec3 sunLightColor = underwater ? SUN_LIGHT_COLOR_UNDERWATER : mix(SUN_LIGHT_COLOR_DUSKDAWN, SUN_LIGHT_COLOR, smoothstep(0.0, duskDayTransition, dayTime));
     vec3 moonLightColor = MOON_LIGHT_COLOR;
     vec3 torchLightColor = TORCH_LIGHT_COLOR;
     vec3 pointLightColor = POINT_LIGHT_COLOR;
@@ -227,7 +228,7 @@ void main() {
     /* Moon Light */
     terrainLight[3].color = moonLightColor;
     terrainLight[3].direction = moonPosition;
-    terrainLight[3].intensity = MOON_LIGHT_INTENSITY * smoothstep(0.0, 0.1, 1.0 - dayTime) * (1.0 - aoAmount) * mix(1.0, RAIN_CUTTOFF, rainLevel);
+    terrainLight[3].intensity = MOON_LIGHT_INTENSITY * smoothstep(0.0, nightDayTransition, nightTime) * (1.0 - aoAmount) * mix(1.0, RAIN_CUTTOFF, rainLevel);
     terrainLight[3].diffusion = MOON_LIGHT_DIFFUSION;
     terrainLight[3].shieldFactor = (1.0 - shadowFactor);
 
@@ -246,7 +247,7 @@ void main() {
 
     // Add sky reflection.
     if (v_texcoord1.y > 0.7 && !underwater && (wetness > 0.0 || metallic || reflective)) {
-        skyReflPos += bayerX64(v_screenPos.xy * 256.0) * 0.05 * roughness;
+        skyReflPos += bayerX64(v_screenPos.xy * 512.0) * ROUGHNESS_BLUR_STRENGTH * roughness;
         vec3 sky = calculateSky(skyReflPos, v_viewPos, MinecraftCameraPosition.xyz, 1.0, sunPosition, moonPosition, dayTime, rainLevel, ViewPositionAndTime.w, false, true).rgb;
         sky *= mix(0.0, 1.0, smoothstep(0.7, 1.0, v_texcoord1.y));
         reflectedImg.rgb += sky;
