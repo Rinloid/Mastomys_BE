@@ -78,9 +78,9 @@ void main() {
     bool isWater = (v_waterFlag > 0.5);
     float aoAmount = clamp(extractAo(v_color0) * AO_AMOUNT, 0.0, 1.0);
     // float sunAngle = sunHeight(FogColor);
-    float sunAngle = cos(MinecraftTimeOfDay.x * 2.0 * PI);
-    float dayTime = max(0.0, sunAngle);
-    vec3 sunPosition = normalize(vec3(cos(sunAngle), sin(sunAngle), 0.3));
+    float sunAngle = MinecraftTimeOfDay.x * 2.0 * PI;
+    float dayTime = max(0.0, cos(sunAngle));
+    vec3 sunPosition = normalize(vec3(sin(sunAngle), cos(sunAngle), 0.3));
     vec3 moonPosition = -sunPosition;
     float shadowFactor = smoothstep(0.92, 0.9375, v_texcoord1.y);
     float causticFactor = 0.0;
