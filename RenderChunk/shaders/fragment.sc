@@ -73,15 +73,24 @@ void main() {
     bool nether = isNehter(FogColor, FogAndDistanceControl.xy);
     bool theEnd = isTheEnd(FogColor, FogAndDistanceControl.xy);
     float rainLevel = (underwater || nether || theEnd) ? 0.0 : getRainLevel(FogColor, FogAndDistanceControl.xy);
-    vec3 fNormal = normalize(cross(dFdx(v_worldPos), dFdy(v_worldPos)));
+    
+    /* Prevents zero division and unstable normalization 
+     * when the derivative value is extremely small.
+    */
+    vec3 normalRaw = cross(dFdx(v_worldPos), dFdy(v_worldPos));
+    float normalLen = dot(normalRaw, normalRaw);
+    vec3 fNormal = (normalLen > 1e-16) ? normalRaw * inversesqrt(normalLen) : vec3(0.0, 1.0, 0.0);
     vec3 normal = fNormal;
+    
     bool isWater = (v_waterFlag > 0.5);
     float aoAmount = clamp(extractAo(v_color0) * AO_AMOUNT, 0.0, 1.0);
+    
     // float sunAngle = sunHeight(FogColor);
     float sunAngle = MinecraftTimeOfDay.x * 2.0 * PI;
     float dayTime = max(0.0, cos(sunAngle));
     vec3 sunPosition = normalize(vec3(sin(sunAngle), cos(sunAngle), 0.3));
     vec3 moonPosition = -sunPosition;
+    
     float shadowFactor = smoothstep(0.92, 0.9375, v_texcoord1.y);
     float causticFactor = 0.0;
     if (underwater) {
