@@ -1,4 +1,4 @@
-$input v_color0, v_fog, v_texcoord0, v_texcoord1, v_waterFlag, v_playerPos, v_worldPos, v_viewPos
+$input v_color0, v_fog, v_texcoord0, v_texcoord1, v_waterFlag, v_playerPos, v_worldPos, v_viewPos, v_screenPos
 
 #include "bgfx_shader.sh"
 
@@ -237,6 +237,7 @@ void main() {
 
     // Add sky reflection.
     if (v_texcoord1.y > 0.7 && !underwater && (wetness > 0.0 || metallic || reflective)) {
+        skyReflPos += bayerX64(v_screenPos.xy * 256.0) * 0.05 * roughness;
         vec3 sky = calculateSky(skyReflPos, v_viewPos, MinecraftCameraPosition.xyz, 1.0, sunPosition, moonPosition, dayTime, rainLevel, ViewPositionAndTime.w, false, true).rgb;
         sky *= mix(0.0, 1.0, smoothstep(0.7, 1.0, v_texcoord1.y));
         reflectedImg.rgb += sky;

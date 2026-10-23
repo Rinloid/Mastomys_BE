@@ -17,7 +17,7 @@
 #define WATER_F0        0.03
 #define WATER_ROUGHNESS 0.02
 
-#define IRON_ROUGHNESS             0.1
+#define IRON_ROUGHNESS             0.05
 #define GOLD_ROUGHNESS             0.2
 #define COPPER_ROUGHNESS           0.4
 #define OTHER_REFLECTIVE_ROUGHNESS 0.2

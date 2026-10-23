@@ -5,7 +5,7 @@
 This is a complete rewrite and evolution of my previous shader project [Musk Rose](https://github.com/Rinloid/musk_rose_rd), containing all much of the knowledge I’ve acquired through 6 years of shader work.
 
 ## Key Features
-* Physically based rendering with possible optimizations
+* Physically based rendering for diffused/specular lights and reflections, with all possible optimizations
 * Material recognition through alpha channel of textures
 * Non-infinity-distant cloud rendering (yes you can be above clouds!)
 * Non-fogcolor-based detection of the sun position

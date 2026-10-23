@@ -15,3 +15,4 @@ flat float    v_waterFlag : TEXCOORD2;
 vec3          v_playerPos : TEXCOORD3;
 vec3          v_worldPos  : TEXCOORD4;
 vec3          v_viewPos   : TEXCOORD5;
+vec3          v_screenPos : TEXCOORD6;

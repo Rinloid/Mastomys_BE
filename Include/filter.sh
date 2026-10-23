@@ -51,4 +51,17 @@ float grayScaleCIE(vec3 x) {
 	return dot(x, vec3(0.2126, 0.7152, 0.0722));
 }
 
+/* Bayer dither by Jodie.
+ * https://www.shadertoy.com/user/Jodie
+ */
+float bayerX2(vec2 a) {
+    return fract(dot(floor(a), vec2(0.5, floor(a).y * 0.75)));
+}
+
+#define bayerX4(a)  (bayerX2 (0.5 * (a)) * 0.25 + bayerX2(a))
+#define bayerX8(a)  (bayerX4 (0.5 * (a)) * 0.25 + bayerX2(a))
+#define bayerX16(a) (bayerX8 (0.5 * (a)) * 0.25 + bayerX2(a))
+#define bayerX32(a) (bayerX16(0.5 * (a)) * 0.25 + bayerX2(a))
+#define bayerX64(a) (bayerX32(0.5 * (a)) * 0.25 + bayerX2(a))
+
 #endif /* !defined(FILTER_INCLUDED) */

@@ -2,7 +2,7 @@ $input a_color0, a_position, a_texcoord0, a_texcoord1
 #ifdef INSTANCING__ON
     $input i_data0, i_data1, i_data2
 #endif
-$output v_color0, v_fog, v_texcoord0, v_texcoord1, v_waterFlag, v_playerPos, v_worldPos, v_viewPos
+$output v_color0, v_fog, v_texcoord0, v_texcoord1, v_waterFlag, v_playerPos, v_worldPos, v_viewPos, v_screenPos
 
 #include "bgfx_shader.sh"
 
@@ -81,6 +81,8 @@ void main() {
     #endif
 
     gl_Position = mul(u_proj, vec4(v_viewPos, 1.0));
+    
+    v_screenPos = gl_Position.xyz;
 
     // Apply foliage waves.
     if (isFoliage(a_color0, a_position)) {

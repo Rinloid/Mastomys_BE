@@ -8,7 +8,7 @@
     },
     "profiles": {
         "windows": {
-            "platforms": ["Direct3D_SM40", "Direct3D_SM50", "Direct3D_SM60", "Direct3D_SM65"]
+            "platforms": ["Direct3D_SM50", "Direct3D_SM60", "Direct3D_SM65"]
         },
         "android": {
             "platforms": ["ESSL_310"]
