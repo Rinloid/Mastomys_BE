@@ -87,7 +87,7 @@ void main() {
     
     // float sunAngle = sunHeight(FogColor);
     float sunAngle = MinecraftTimeOfDay.x * 2.0 * PI;
-    vec3 sunPosition = normalize(vec3(sin(sunAngle), cos(sunAngle), 0.3));
+    vec3 sunPosition = normalize(vec3(sin(sunAngle), cos(sunAngle), SUN_PATH_ROTATION));
     float dayTime = max(0.0, sunPosition.y);
     vec3 moonPosition = -sunPosition;
     float nightTime = max(0.0, moonPosition.y);
@@ -270,6 +270,7 @@ void main() {
     // Linear -> sRGB
     linearToSrgbJodie(finalColor);
 
+    // Apply fog.
     if (v_fog > 0.0) {
         vec3 fogColor = calculateFog(skyPos, sunPosition, moonPosition, dayTime, rainLevel);
         if (nether || theEnd) {

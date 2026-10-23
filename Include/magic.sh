@@ -6,6 +6,8 @@
 
 #define MC_CHUNK_SCALE 16.0
 
+#define SUN_PATH_ROTATION -0.2
+
 #define REFLECTIVE_NORMAL_HEIGHT 0.00064
 
 #define DEFAULT_DIRECTION vec3(0.0, 1.0, 0.0)
