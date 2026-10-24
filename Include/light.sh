@@ -36,48 +36,30 @@ vec3 getEnvironmentBRDF(vec3 V, vec3 N, const float R, const vec3 F0) {
 /* Calculate physical specular light factor.
  * See: https://learnopengl.com/PBR/Theory
 */
-float getVisibleGGX(vec3 V, vec3 L, vec3 N, const float R) {
-	float dotLN = max(0.0, dot(L, N));
-	float dotVN = max(0.0, dot(V, N));
+vec3 getPBRSpecular(vec3 V, vec3 L, vec3 N, float R, vec3 F0) {
+    float NoV = max(dot(N, V), 0.0);
+    float NoL = max(dot(N, L), 0.0);
 
-	float gv = dotLN * sqrt(dotVN * (dotVN - dotVN * R * R) + R * R);
-	float gl = dotVN * sqrt(dotLN * (dotLN - dotLN * R * R) + R * R);
-	
-	return 0.5 / max(0.001, gv + gl);
-}
+    if (NoV <= 0.0 || NoL <= 0.0) {
+        return vec3_splat(0.0);
+    }
 
-float getDistributionGGX(vec3 V, vec3 L, vec3 N, const float R) {
-	vec3 H = normalize(V + L);
-	float dotHN = max(0.0, dot(H, N));
-	float denominator = (dotHN * R * R - dotHN) * dotHN + 1.0;
-	
-	return (R * R) / (PI * denominator * denominator);
-}
+    vec3 H = normalize(V + L);
 
-float getGeometrySchlickGGX(float N, const float R) {
-    float k = ((R + 1.0) * (R + 1.0)) * 0.125;
-	
-    return N / (N * (1.0 - k) + k);
-}
-float getGeometrySmith(vec3 V, vec3 L, vec3 N, const float R) {
-    float dotVN = max(dot(V, N), 0.0);
-    float dotLN = max(dot(L, N), 0.0);
+    float NoH = max(dot(N, H), 0.0);
+    float VoH = max(dot(V, H), 0.0);
 
-    return getGeometrySchlickGGX(dotVN, R) * getGeometrySchlickGGX(dotLN, R);
-}
-vec3 getPBRSpecular(vec3 V, vec3 L, vec3 N, const float R, const vec3 F0) {
-	vec3 H = normalize(V + L);
-	
-	float dotVN = max(dot(V, N), 0.0);
-    float dotLN = max(dot(L, N), 0.0);
+    float R2 = R * R;
+    float d = NoH * NoH * (R2 - 1.0) + 1.0;
+    float D = R2 / (PI * d * d);
 
-	float GGX = getDistributionGGX(V, L, N, R) * getVisibleGGX(V, L, N, R);
-	float G = getGeometrySmith(V, L, N, R);
-	vec3 F = getFresnelSchlick(H, N, F0);
+    float lambdaV = NoL * sqrt(NoV * NoV * (1.0 - R2) + R2);
+    float lambdaL = NoV * sqrt(NoL * NoL * (1.0 - R2) + R2);
+    float Vis = 0.5 / max(lambdaV + lambdaL, 1e-6);
 
-    vec3 specular = (GGX * G * F) / max(0.001, 4.0 * dotVN * dotLN);
+    vec3 F = getFresnelSchlick(H, V, F0);
 
-	return specular * dotLN;
+    return D * Vis * F * NoL;
 }
 
 struct LightState {

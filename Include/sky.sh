@@ -121,8 +121,8 @@ vec4 calculateSky(vec3 pos, vec3 vPos, vec3 cPos, float depth, vec3 sunPos, vec3
                 rayPos.z += time * 0.002;
 
                 for (int j = 0; j < cloudRaymarchingSteps; j++) {
-                    rayPos += sunPos * (7.0 / cloudRaymarchingSteps);
-                    cloudShadeFactor += fBM(cloudShadeOctaves, mix(0.43, 0.0, rainLevel), 0.6, rayPos.xz * 0.015);
+                    rayPos += sunPos * (7.0 / float(cloudRaymarchingSteps));
+                    cloudShadeFactor += fBM(cloudShadeOctaves, mix(0.43, 0.0, rainLevel), 0.6, rayPos.xz * 0.015) / float(cloudRaymarchingSteps);
                 }
             }
             clouds.a = mix(clouds.a, 0.0, cloudFog);
