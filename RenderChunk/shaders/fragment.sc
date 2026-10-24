@@ -91,8 +91,13 @@ void main() {
     float dayTime = max(0.0, sunPosition.y);
     vec3 moonPosition = -sunPosition;
     float nightTime = max(0.0, moonPosition.y);
-    
-    float shadowFactor = smoothstep(0.92, 0.9375, v_texcoord1.y);
+
+    #if defined(NO_SHADOW)
+        float shadowFactor = 1.0;
+    #else
+        float shadowFactor = smoothstep(0.92, 0.9375, v_texcoord1.y);
+    #endif
+
     float causticFactor = 0.0;
     if (underwater) {
         causticFactor = waterWave(v_worldPos, ViewPositionAndTime.w);
