@@ -284,9 +284,11 @@ void main() {
     }
 
     // Apply cloud rendering on terrain.
-    vec4 clouds = calculateSky(skyPos, v_viewPos, MinecraftCameraPosition.xyz, depth, sunPosition, moonPosition, dayTime, rainLevel, ViewPositionAndTime.w, true, false);
-    linearToSrgbJodie3(clouds.rgb);
-    finalColor.rgb = mix(finalColor.rgb, clouds.rgb, clouds.a);
+    if (v_texcoord1.y > 0.5) {
+        vec4 clouds = calculateSky(skyPos, v_viewPos, MinecraftCameraPosition.xyz, depth, sunPosition, moonPosition, dayTime, rainLevel, ViewPositionAndTime.w, true, false);
+        linearToSrgbJodie3(clouds.rgb);
+        finalColor.rgb = mix(finalColor.rgb, clouds.rgb, mix(0.0, clouds.a, v_texcoord1.y));
+    }
 
     // Apply shadow disaturation.
     float lum = grayScaleNTSC(finalColor.rgb);
