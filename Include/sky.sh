@@ -17,12 +17,28 @@ CONST(float overExposure = 3.0);
 CONST(float underExposure = 3.0);
 
 CONST(float cloudHeight = 128.0;)
-CONST(int cloudOctavesHigh = 6;)
-CONST(int cloudShadeOctavesHigh = 4;)
-CONST(int cloudRaymarchingStepsHigh = 1;) // Only one step to prevent lags
-CONST(int cloudOctavesLow = 4;)
-CONST(int cloudShadeOctavesLow = 2;)
-CONST(int cloudRaymarchingStepsLow = 1;)
+#if defined(HIGH_QUALITY)
+    CONST(int cloudOctavesHigh = 8;)
+    CONST(int cloudShadeOctavesHigh = 6;)
+    CONST(int cloudRaymarchingStepsHigh = 4;)
+    CONST(int cloudOctavesLow = 8;)
+    CONST(int cloudShadeOctavesLow = 6;)
+    CONST(int cloudRaymarchingStepsLow = 4;)
+#elif defined(LOW_QUALITY)
+    CONST(int cloudOctavesHigh = 4;)
+    CONST(int cloudShadeOctavesHigh = 1;)
+    CONST(int cloudRaymarchingStepsHigh = 1;)
+    CONST(int cloudOctavesLow = 4;)
+    CONST(int cloudShadeOctavesLow = 1;)
+    CONST(int cloudRaymarchingStepsLow = 1;)
+#else
+    CONST(int cloudOctavesHigh = 6;)
+    CONST(int cloudShadeOctavesHigh = 4;)
+    CONST(int cloudRaymarchingStepsHigh = 1;)
+    CONST(int cloudOctavesLow = 4;)
+    CONST(int cloudShadeOctavesLow = 2;)
+    CONST(int cloudRaymarchingStepsLow = 1;)
+#endif
 
 // Compute rayleigh and mie phases.
 // See: https://ebruneton.github.io/precomputed_atmospheric_scattering/atmosphere/functions.glsl.html#single_scattering_computation	
@@ -65,6 +81,12 @@ float diffuseSphere(vec3 spherePos, vec3 lightPos, const float radius) {
 
 // Calculate simple skies!
 vec4 calculateSky(vec3 pos, vec3 vPos, vec3 cPos, float depth, vec3 sunPos, vec3 moonPos, float dayTime, float rainLevel, float time, bool cloudOnly, bool lowDetail) {
+    #if defined(HIGH_QUALITY)
+        lowDetail = false;
+    #elif defined(LOW_QUALITY)
+        lowDetail = true;
+    #endif
+
     vec4 clouds = vec4_splat(0.0);
     float cloudShadeFactor = 0.0;
 
@@ -99,7 +121,7 @@ vec4 calculateSky(vec3 pos, vec3 vPos, vec3 cPos, float depth, vec3 sunPos, vec3
                 rayPos.z += time * 0.002;
 
                 for (int j = 0; j < cloudRaymarchingSteps; j++) {
-                    rayPos += sunPos * 7.0;
+                    rayPos += sunPos * (7.0 / cloudRaymarchingSteps);
                     cloudShadeFactor += fBM(cloudShadeOctaves, mix(0.43, 0.0, rainLevel), 0.6, rayPos.xz * 0.015);
                 }
             }

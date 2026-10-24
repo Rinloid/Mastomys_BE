@@ -118,44 +118,46 @@ void main() {
     float emission = 0.0;
     bool  metallic = false;
 
-    switch (mID) {
-        case 0: // Iron
-            F0 = finalColor.rgb;
-            roughness = IRON_ROUGHNESS;
-            metallic = true;
-            break;
-        case 1: // Gold
-            F0 = finalColor.rgb;
-            roughness = GOLD_ROUGHNESS;
-            metallic = true;
-            break;
-        case 2: // Copper
-            F0 = finalColor.rgb;
-            roughness = COPPER_ROUGHNESS;
-            metallic = true;
-            break;
-        case 3: // Other reflective blocks
-            F0 = vec3_splat(OTHER_REFLECTIVE_F0);
-            roughness = OTHER_REFLECTIVE_ROUGHNESS;
-            reflective = true;
-            metallic = false;
-            break;
-        default: break;
-    }
-
-    if (isWater) {
-        F0 = vec3_splat(WATER_F0);
-        roughness = WATER_ROUGHNESS;
-        metallic = false;
-        wetness = 1.0;
-        finalColor = WATER_COLOR;
-        if (!underwater) {
-            normal = normalize(mul(getTBNMatrix(normal), getWaterNormal(v_worldPos, ViewPositionAndTime.w, WATER_WAVE_HEIGHT)));
+    #if !defined(LOW_QUALITY)
+        switch (mID) {
+            case 0: // Iron
+                F0 = finalColor.rgb;
+                roughness = IRON_ROUGHNESS;
+                metallic = true;
+                break;
+            case 1: // Gold
+                F0 = finalColor.rgb;
+                roughness = GOLD_ROUGHNESS;
+                metallic = true;
+                break;
+            case 2: // Copper
+                F0 = finalColor.rgb;
+                roughness = COPPER_ROUGHNESS;
+                metallic = true;
+                break;
+            case 3: // Other reflective blocks
+                F0 = vec3_splat(OTHER_REFLECTIVE_F0);
+                roughness = OTHER_REFLECTIVE_ROUGHNESS;
+                reflective = true;
+                metallic = false;
+                break;
+            default: break;
         }
-    }
-    else if (metallic || reflective) {
-        normal = normalize(mul(getTBNMatrix(normal), getTexNormal(v_texcoord0, REFLECTIVE_NORMAL_HEIGHT)));
-    }
+
+        if (isWater) {
+            F0 = vec3_splat(WATER_F0);
+            roughness = WATER_ROUGHNESS;
+            metallic = false;
+            wetness = 1.0;
+            finalColor = WATER_COLOR;
+            if (!underwater) {
+                normal = normalize(mul(getTBNMatrix(normal), getWaterNormal(v_worldPos, ViewPositionAndTime.w, WATER_WAVE_HEIGHT)));
+            }
+        }
+        else if (metallic || reflective) {
+            normal = normalize(mul(getTBNMatrix(normal), getTexNormal(v_texcoord0, REFLECTIVE_NORMAL_HEIGHT)));
+        }
+    #endif
 
     // Translucent objects should be opaque in distance.
     #if defined(TRANSPARENT_PASS)
@@ -174,19 +176,21 @@ void main() {
         F0 *= 0.5;
     }
 
-    // Apply rainy effects
-    if (rainLevel > 0.0) {
-        float wet = 0.0;
-        if (!isWater) {
-            wet = mix(0.0, rainLevel * WET_GROUND_FACTOR, shadowFactor);
+    #if !defined(LOW_QUALITY)
+        // Apply rainy effects
+        if (rainLevel > 0.0) {
+            float wet = 0.0;
+            if (!isWater) {
+                wet = mix(0.0, rainLevel * WET_GROUND_FACTOR, shadowFactor);
+            }
+
+            F0 = mix(F0, vec3_splat(WATER_F0), wet);
+            roughness = mix(roughness, WATER_ROUGHNESS, wet);
+            wetness = mix(wetness, 1.0, wet);
         }
 
-        F0 = mix(F0, vec3_splat(WATER_F0), wet);
-        roughness = mix(roughness, WATER_ROUGHNESS, wet);
-        wetness = mix(wetness, 1.0, wet);
-    }
-
-    normal = normalize(mul(getTBNMatrix(normal), getRainRipplesNormal(fNormal, v_worldPos.xz, rainLevel, v_texcoord1.y, ViewPositionAndTime.w, RAIN_RIPPLES_HEIGHT)));
+        normal = normalize(mul(getTBNMatrix(normal), getRainRipplesNormal(fNormal, v_worldPos.xz, rainLevel, v_texcoord1.y, ViewPositionAndTime.w, RAIN_RIPPLES_HEIGHT)));
+    #endif
 
     vec3 skyPos = normalize(v_playerPos);
     vec3 skyReflPos = reflect(normalize(v_playerPos), normal);
@@ -250,13 +254,15 @@ void main() {
     terrainLight[5].diffusion = TORCH_LIGHT_DIFFUSION;
     terrainLight[5].shieldFactor = (1.0 - pow5(pow5(clamp(v_texcoord1.x, 0.0, 1.0))));
 
+    #if !defined(LOW_QUALITY)
     // Add sky reflection.
-    if (v_texcoord1.y > 0.7 && !underwater && (wetness > 0.0 || metallic || reflective)) {
-        skyReflPos += bayerX64(v_screenPos.xy * 512.0) * ROUGHNESS_BLUR_STRENGTH * roughness;
-        vec3 sky = calculateSky(skyReflPos, v_viewPos, MinecraftCameraPosition.xyz, 1.0, sunPosition, moonPosition, dayTime, rainLevel, ViewPositionAndTime.w, false, true).rgb;
-        sky *= mix(0.0, 1.0, smoothstep(0.7, 1.0, v_texcoord1.y));
-        reflectedImg.rgb += sky;
-    }
+        if (v_texcoord1.y > 0.7 && !underwater && (wetness > 0.0 || metallic || reflective)) {
+            skyReflPos += bayerX64(v_screenPos.xy * 512.0) * ROUGHNESS_BLUR_STRENGTH * roughness;
+            vec3 sky = calculateSky(skyReflPos, v_viewPos, MinecraftCameraPosition.xyz, 1.0, sunPosition, moonPosition, dayTime, rainLevel, ViewPositionAndTime.w, false, true).rgb;
+            sky *= mix(0.0, 1.0, smoothstep(0.7, 1.0, v_texcoord1.y));
+            reflectedImg.rgb += sky;
+        }
+    #endif
 
     // Add lights and their reflections.
     for (int i = 0; i < TERRAIN_LIGHT_COUNT; i++) {
@@ -292,7 +298,9 @@ void main() {
     if (v_texcoord1.y > 0.5) {
         vec4 clouds = calculateSky(skyPos, v_viewPos, MinecraftCameraPosition.xyz, depth, sunPosition, moonPosition, dayTime, rainLevel, ViewPositionAndTime.w, true, false);
         linearToSrgbJodie3(clouds.rgb);
-        finalColor.rgb = mix(finalColor.rgb, clouds.rgb, mix(0.0, clouds.a, v_texcoord1.y));
+        if (clouds.a > 0.0) {
+            finalColor.rgb = mix(finalColor.rgb, clouds.rgb, mix(0.0, clouds.a, v_texcoord1.y));
+        }
     }
 
     // Apply shadow disaturation.

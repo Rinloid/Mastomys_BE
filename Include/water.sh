@@ -8,8 +8,10 @@ float waterWave(vec3 pos, float time) {
 
     float wave = 0.0;
 
-    wave += (gradientNoise(pos.xz * vec2(1.0, 0.8) + vec2(time * 1.2, time * 1.3), freq) + 1.0) * 0.5;
-    wave += (gradientNoise(pos.xz * vec2(0.9, 0.7) + vec2(16.0 - time * 1.6, 12.0 - time * 1.4), freq) + 1.0) * 0.5;
+    #if !defined(LOW_QUALITY)
+        wave += (gradientNoise(pos.xz * vec2(1.0, 0.8) + vec2(time * 1.2, time * 1.3), freq) + 1.0) * 0.5;
+        wave += (gradientNoise(pos.xz * vec2(0.9, 0.7) + vec2(16.0 - time * 1.6, 12.0 - time * 1.4), freq) + 1.0) * 0.5;
+    #endif
 
     return wave * 0.5;
 }
