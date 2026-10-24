@@ -3,6 +3,7 @@
 **Mastomys** is a shaderpack for Minecraft Bedrock Edition.
 
 This is a complete rewrite and evolution of my previous shader project [Musk Rose](https://github.com/Rinloid/musk_rose_rd), containing all much of the knowledge I’ve acquired through 6 years of shader work.
+[Screenshots](https://github.com/Rinloid/Mastomys_BE/blob/master/SCREENSHOT.md)
 
 ## Key Features
 * Physically based rendering for diffused/specular lights and reflections, with all possible optimizations

@@ -9,3 +9,6 @@
 ![Screenshot of the shader](./img/6.jpeg)
 ![Screenshot of the shader](./img/7.jpeg)
 ![Screenshot of the shader](./img/8.jpeg)
+
+Low quality option:
+![Screenshot of the shader](./img/low-quality.jpeg)
