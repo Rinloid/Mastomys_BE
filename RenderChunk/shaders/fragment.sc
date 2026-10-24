@@ -83,7 +83,7 @@ void main() {
     vec3 normal = fNormal;
     
     bool isWater = (v_waterFlag > 0.5);
-    float aoAmount = clamp(extractAo(v_color0) * AO_AMOUNT, 0.0, 1.0);
+    float aoAmount = clamp(extractAo(v_color0) * AO_AMOUNT, 0.1, 0.9);
     
     // float sunAngle = sunHeight(FogColor);
     float sunAngle = MinecraftTimeOfDay.x * 2.0 * PI;
