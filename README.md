@@ -23,11 +23,10 @@ Install these tools depending on your device:
 
 * Windows: [BetterRenderDragon](https://github.com/QYCottage/BetterRenderDragon) or [Wyvern Loader](https://github.com/mcbegamerxx954/wyvern_releases)
 * Android: [MB Loader](https://play.google.com/store/apps/details?id=io.github.bambosan.mbloader)
+* iOS: [Hynis](https://github.com/mcpebd/ipa-wo-hynis-jutsu)
 
 And now, your game is able to load shaders from resource packs.
 See [releases](https://github.com/Rinloid/Mastomys_BE/releases) to download the .mcpack and apply it!
-
-If your are on iOS, unfortunately you have to relpace the material.bin files inside your application file manually.
 
 ## Building
 Install [Lazurite](https://github.com/veka0/lazurite) and follow its documentation to build.
