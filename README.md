@@ -14,7 +14,7 @@ This is a complete rewrite and evolution of my previous shader project [Musk Ros
 * HDR with Lottes tone-mapper, and gamma correction
 
 ## Supported platforms
-* Windows (Direct3D Shader Model 5.0+)
+* Windows (Direct3D Shader Model 4.0+)
 * Android (OpenGL ES 3.1+)
 * iOS (Untested & Unrecommended)
 
